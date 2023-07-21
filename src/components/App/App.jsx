@@ -1,30 +1,40 @@
-import axios from "axios";
 import { Component } from "react";
 import { AppStyled } from "./App.styled";
-import { Searchbar } from "components/Searchbar/Searchbar";
-import { SearchForm } from "components/SearchForm/SearchForm";
-import { ImageGallery } from "components/ImageGallery/ImageGallery";
-import { Modal } from "components/Modal/Modal";
-import { Button } from "components/Button/Button";
+// import { Searchbar } from "components/Searchbar/Searchbar";
+// import { SearchForm } from "components/SearchForm/SearchForm";
+// import { ImageGallery } from "components/ImageGallery/ImageGallery";
+// import { Modal } from "components/Modal/Modal";
+// import { Button } from "components/Button/Button";
 import { FetchMaterials } from "services/api";
 
-export class App extends Component {
+ class App extends Component {
 
-  componentDidUpdate() {
-     FetchMaterials('cat', 1)
+  state = {
+    photos: [],
+  };
+
+  async componentDidMount() {
+      try {
+        const res = await FetchMaterials('cat', 1);
+        this.setState({ photos: res.data.hits });
+      } catch (error) {
+        console.log(error);
+}
   }
 
   render () {
     return (
       <AppStyled>
-        <Searchbar />
+        {/* <Searchbar />
         <SearchForm />
-        <ImageGallery />
+        <ImageGallery photos={this.state.photos} />
         <Modal />
-        <Button />
+        <Button /> */}
       </AppStyled>
-    )
+    );
 
   }
 
 };
+
+export default App;
