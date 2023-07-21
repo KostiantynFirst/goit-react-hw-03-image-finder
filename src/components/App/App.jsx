@@ -6,26 +6,13 @@ import { SearchForm } from "components/SearchForm/SearchForm";
 import { ImageGallery } from "components/ImageGallery/ImageGallery";
 import { Modal } from "components/Modal/Modal";
 import { Button } from "components/Button/Button";
-
-const API_KEY = '38387021-e8462f34030ce37ed84fa82f8';
-axios.defaults.baseURL = 'https://pixabay.com/api/';
-
-
-async function fetchArticles(form, currentPage) {
-
-  
-  try {
-    const res = await axios.get(`?q=cat&page=${currentPage}&key=${API_KEY}&image_type=photo&orientation=horizontal&per_page=12`);
-    // console.log(res.data.hits);
-    const photos = res.data.hits;
-    
-    console.log(photos);
-  } catch (error) {
-    console.log(error)
-  }
-}
+import { FetchMaterials } from "services/api";
 
 export class App extends Component {
+
+  componentDidUpdate() {
+     FetchMaterials('cat', 1)
+  }
 
   render () {
     return (
