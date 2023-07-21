@@ -1,4 +1,6 @@
-export const SearchbarField = div`
+import styled from 'styled-components';
+
+export const SearchbarField = styled.div`
         top: 0;
         left: 0;
         position: sticky;
