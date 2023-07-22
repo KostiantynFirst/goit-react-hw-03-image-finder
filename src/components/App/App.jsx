@@ -1,6 +1,6 @@
 import { Component } from "react";
 import { AppStyled } from "./App.styled";
-// import { Searchbar } from "components/Searchbar/Searchbar";
+import { Searchbar } from "components/Searchbar/Searchbar";
 // import { SearchForm } from "components/SearchForm/SearchForm";
 // import { ImageGallery } from "components/ImageGallery/ImageGallery";
 // import { Modal } from "components/Modal/Modal";
@@ -16,7 +16,11 @@ import { FetchMaterials } from "services/api";
   async componentDidMount() {
       try {
         const res = await FetchMaterials('cat', 1);
-        this.setState({ photos: res.data.hits });
+        // this.setState({ photos: res.data.hits });
+        console.log(res[0].id);
+        console.log(res[0].webformatURL );
+        console.log(res[0].largeImageURL );
+
       } catch (error) {
         console.log(error);
 }
@@ -25,11 +29,11 @@ import { FetchMaterials } from "services/api";
   render () {
     return (
       <AppStyled>
-        {/* <Searchbar />
-        <SearchForm />
+         <Searchbar />
+        {/* <SearchForm />
         <ImageGallery photos={this.state.photos} />
         <Modal />
-        <Button /> */}
+        <Button />  */}
       </AppStyled>
     );
 

@@ -7,10 +7,9 @@ export const FetchMaterials = async (form, currentPage) => {
         const res = await axios.get(`?q=${form}&page=${currentPage}&key=${API_KEY}&image_type=photo&orientation=horizontal&per_page=12`);
         // console.log(res.data.hits);
         const photos = res.data.hits;
-    
-        console.log(photos);
+        return photos;
   } catch (error) {
-        console.log(error)
+        console.log(error);
   }
 }
 
