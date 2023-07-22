@@ -1,23 +1,22 @@
-import { SearchbarField } from "./Searchbar.styled"
+import { SearchbarField, Header, Form, Button, Input, ButtonLabel} from "./Searchbar.styled"
 
 export const Searchbar = () => {
     return (
         <SearchbarField>
-            <header class="searchbar">
-                <form class="form">
-                    <button type="submit" class="button">
-                    <span class="button-label">Search</span>
-                    </button>
+            <Header>
+                <Form>
+                    <Button>
+                    <ButtonLabel>Search</ButtonLabel>
+                    </Button>
 
-                    <input
-                    class="input"
+                    <Input
                     type="text"
-                    autocomplete="off"
-                    autofocus
+                    autoComplete="off"
+                    autoFocus
                     placeholder="Search images and photos"
                     />
-                </form>
-            </header>
+                </Form>
+            </Header>
                 
         </SearchbarField>
     )
