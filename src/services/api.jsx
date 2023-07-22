@@ -12,5 +12,3 @@ export const FetchMaterials = async (form, currentPage) => {
         console.log(error);
   }
 }
-
-
