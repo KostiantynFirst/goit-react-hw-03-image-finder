@@ -9,27 +9,26 @@ import { FetchMaterials } from "services/api";
 
  class App extends Component {
 
-  state = {
-    photos: [],
+  handleSubmit = async (searchQuery) => {
+    try {
+      const res = await FetchMaterials(searchQuery, 1);
+      // Handle the response data as needed
+      console.log(res[0].id);
+      console.log(res[0].webformatURL);
+      console.log(res[0].largeImageURL);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
-  async componentDidMount() {
-      try {
-        const res = await FetchMaterials('cat', 1);
-        // this.setState({ photos: res.data.hits });
-        console.log(res[0].id);
-        console.log(res[0].webformatURL );
-        console.log(res[0].largeImageURL );
-
-      } catch (error) {
-        console.log(error);
-}
-  }
-
+  handleChange = (event) => {
+    this.setState({ searchQuery: event.target.value });
+  };
+  
   render () {
     return (
       <AppStyled>
-         <Searchbar />
+         <Searchbar handleSubmit={this.handleSubmit} handleChange={this.handleChange} />
         {/* <SearchForm />
         <ImageGallery photos={this.state.photos} />
         <Modal />
