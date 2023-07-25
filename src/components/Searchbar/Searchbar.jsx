@@ -3,19 +3,37 @@ import { SearchbarField, Header, Form, Button, Input, ButtonLabel} from "./Searc
 
 export class Searchbar extends Component {
 
+
     state = {
         searchQuery: '',
+        errorL: null,
+        status: idle,
     }
 
-    handleSubmit = (event) => {
-        event.preventDefault();
-        this.props.onSubmit(this.state.searchQuery);
+    componentDidUpdate = (prevProps, prevState) => {
+        const prevName = prevProps.imageName
+        const nextName = this.props.imageName
+        if(prevName !== nextName) {
+            'imageName changed'
+            this.setState({ status: 'pending' })
+        }
+    }
+
+    handleSubmit = async (searchQuery) => {
+        try {
+          const res = await FetchMaterials(searchQuery, 1);
+          // Handle the response data as needed
+          console.log(res[0].id);
+          console.log(res[0].webformatURL);
+          console.log(res[0].largeImageURL);
+        } catch (error) {
+          console.log(error);
+        }
       };
     
       handleChange = (event) => {
         this.setState({ searchQuery: event.target.value });
       };
-    
 
     render () {
         return (
@@ -26,14 +44,14 @@ export class Searchbar extends Component {
                         <ButtonLabel>Search</ButtonLabel>
                         </Button>
     
-                        <Input
+                    <Input
                         type="text"
                         autoComplete="off"
                         autoFocus
                         placeholder="Search images and photos"
                         value={this.state.searchQuery}
                         onChange={this.handleChange}
-                        />
+                    />
                     </Form>
                 </Header>
             </SearchbarField>
