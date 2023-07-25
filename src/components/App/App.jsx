@@ -1,4 +1,5 @@
-// import { ToastContainer } from "react-toastify";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { Component } from "react";
 import { AppStyled } from "./App.styled";
 import { Searchbar } from "components/Searchbar/Searchbar";
@@ -11,17 +12,23 @@ import { Button } from "components/Button/Button";
 
   state = {
     images: [],
-    // status: 'idle',
+    page: 1,
+    isLoading: false,
+    isLastPage: false,
     }
 
-      handleSubmit = async (searchQuery) => {
+  handleSubmit = async (searchQuery) => {
     try {
       const API_KEY = "38387021-e8462f34030ce37ed84fa82f8";
-      const page = 1;
+      const { page } = this.state;
       const res = await this.fetchMaterials(searchQuery, page, API_KEY);
-      this.setState({ images: res });
-    } catch (error) {
+      this.setState(prevState => ({
+        images: [...prevState.images, ...res],
+        page: prevState.page + 1,
+      })); 
+     } catch (error) {
       console.log(error);
+      toast.error("Error occurred while fetching images.");
     }
   };
 
@@ -32,7 +39,7 @@ import { Button } from "components/Button/Button";
       );
       const data = await res.json();
       if (data.hits.length === 0) {
-        alert("No images found for this search query.");
+        toast.error("No images found for this search query.");
       }
       return data.hits.map(({ id, tags, webformatURL, largeImageURL }) => ({
         id,
@@ -55,7 +62,7 @@ import { Button } from "components/Button/Button";
         <Searchbar onSubmit={this.handleSubmit} />
         <ImageGallery images={this.state.images} onImageClick={this.onImageClick} />
         {/* <Modal /> */}
-        <Button onClick={this.fetchMaterials} />   
+        <Button onClick={this.handleSubmit} />   
       </AppStyled>
     );
 
