@@ -4,16 +4,17 @@ import { AppStyled } from "./App.styled";
 import { Searchbar } from "components/Searchbar/Searchbar";
 import { ImageGallery } from "components/ImageGallery/ImageGallery";
 // import { Modal } from "components/Modal/Modal";
-// import { Button } from "components/Button/Button";
-import { FetchMaterials } from "services/api";
+import { Button } from "components/Button/Button";
+
 
  class App extends Component {
 
   state = {
     images: [],
-  }
+    // status: 'idle',
+    }
 
-  handleSubmit = async (searchQuery) => {
+      handleSubmit = async (searchQuery) => {
     try {
       const API_KEY = "38387021-e8462f34030ce37ed84fa82f8";
       const page = 1;
@@ -31,7 +32,7 @@ import { FetchMaterials } from "services/api";
       );
       const data = await res.json();
       if (data.hits.length === 0) {
-        throw new Error("No images found for this search query.");
+        alert("No images found for this search query.");
       }
       return data.hits.map(({ id, tags, webformatURL, largeImageURL }) => ({
         id,
@@ -46,21 +47,23 @@ import { FetchMaterials } from "services/api";
 
   onImageClick = () => {
     console.log('click on image');
-  }
+  };
   
   render () {
     return (
       <AppStyled>
         <Searchbar onSubmit={this.handleSubmit} />
         <ImageGallery images={this.state.images} onImageClick={this.onImageClick} />
-        {/* <Modal />
-        <Button />   */}
+        {/* <Modal /> */}
+        <Button onClick={this.fetchMaterials} />   
       </AppStyled>
     );
 
+  };
   }
 
-};
+
+
 
 export default App;
 
