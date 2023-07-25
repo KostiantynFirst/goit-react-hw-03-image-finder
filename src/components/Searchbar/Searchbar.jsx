@@ -1,39 +1,55 @@
 import { Component } from "react"
+import axios from "axios";
 import { SearchbarField, Header, Form, Button, Input, ButtonLabel} from "./Searchbar.styled"
+// import { FetchMaterials } from "services/api"
+// import { toast } from "react-toastify/dist/components";
 
 export class Searchbar extends Component {
 
-
     state = {
         searchQuery: '',
-        errorL: null,
-        status: idle,
     }
 
-    componentDidUpdate = (prevProps, prevState) => {
-        const prevName = prevProps.imageName
-        const nextName = this.props.imageName
-        if(prevName !== nextName) {
-            'imageName changed'
-            this.setState({ status: 'pending' })
+
+    handleChange = e => {
+        this.setState({ searchQuery: e.target.value });
+    }
+
+    handleSubmit = e => {
+        e.preventDefault();
+        const { searchQuery } = this.state;
+        if(searchQuery.trim() !== "") {
+            this.props.onSubmit(searchQuery);
         }
+
+        this.props.onSubmit(this.state.searchQuery)
     }
 
-    handleSubmit = async (searchQuery) => {
+    fetchImg = async () => {
+        const {searchQuery, page} = this.state 
+        const API_KEY = '38387021-e8462f34030ce37ed84fa82f8';
+        axios.defaults.baseURL = 'https://pixabay.com/api/';
+        this.setState( {status: "prending"} )
+
         try {
-          const res = await FetchMaterials(searchQuery, 1);
-          // Handle the response data as needed
-          console.log(res[0].id);
-          console.log(res[0].webformatURL);
-          console.log(res[0].largeImageURL);
-        } catch (error) {
-          console.log(error);
-        }
-      };
-    
-      handleChange = (event) => {
-        this.setState({ searchQuery: event.target.value });
-      };
+            const res = await axios.get(`?q=${searchQuery}&page=${page}&key=${API_KEY}&image_type=photo&orientation=horizontal&per_page=12`);
+            const photos = res.data.hits;
+            
+           if (photos.length === 0) {
+            alert('There are no images for this request')
+           } 
+
+           const requests = photos.map(({id, tags, webformatURL, largeImageURL }) => ({id, tags, webformatURL, largeImageURL }));
+           this.setState((prevState) => ({
+            images: [...prevState.images, ...requests],
+            page: prevState.page + 1
+           }));
+
+      } catch (error) {
+            console.log(error);
+      }
+    }
+
 
     render () {
         return (
