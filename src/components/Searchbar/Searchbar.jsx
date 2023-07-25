@@ -1,5 +1,4 @@
 import { Component } from "react"
-import axios from "axios";
 import { SearchbarField, Header, Form, Button, Input, ButtonLabel} from "./Searchbar.styled"
 // import { FetchMaterials } from "services/api"
 // import { toast } from "react-toastify/dist/components";
@@ -30,7 +29,7 @@ export class Searchbar extends Component {
             <SearchbarField>
                 <Header>
                     <Form onSubmit={this.handleSubmit}>
-                        <Button>
+                        <Button type="submit">
                         <ButtonLabel>Search</ButtonLabel>
                         </Button>
     

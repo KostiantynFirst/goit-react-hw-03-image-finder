@@ -2,8 +2,7 @@
 import { Component } from "react";
 import { AppStyled } from "./App.styled";
 import { Searchbar } from "components/Searchbar/Searchbar";
-// import { SearchForm } from "components/SearchForm/SearchForm";
-// import { ImageGallery } from "components/ImageGallery/ImageGallery";
+import { ImageGallery } from "components/ImageGallery/ImageGallery";
 // import { Modal } from "components/Modal/Modal";
 // import { Button } from "components/Button/Button";
 import { FetchMaterials } from "services/api";
@@ -11,7 +10,7 @@ import { FetchMaterials } from "services/api";
  class App extends Component {
 
   state = {
-    images: '',
+    images: [],
   }
 
   handleSubmit = async (searchQuery) => {
@@ -44,16 +43,18 @@ import { FetchMaterials } from "services/api";
       throw error;
     }
   };
+
+  onImageClick = () => {
+    console.log('click on image');
+  }
   
   render () {
     return (
       <AppStyled>
-         <Searchbar onSubmit={this.handleSubmit} />
-        {/* <SearchForm />
-        <ImageGallery photos={this.state.photos} />
-        <Modal />
-        <Button />  */}
-        {/* <ToastContainer autoClose={3000} /> */}
+        <Searchbar onSubmit={this.handleSubmit} />
+        <ImageGallery images={this.state.images} onImageClick={this.onImageClick} />
+        {/* <Modal />
+        <Button />   */}
       </AppStyled>
     );
 
@@ -62,3 +63,4 @@ import { FetchMaterials } from "services/api";
 };
 
 export default App;
+
