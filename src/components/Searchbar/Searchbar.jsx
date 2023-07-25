@@ -25,32 +25,6 @@ export class Searchbar extends Component {
         this.props.onSubmit(this.state.searchQuery)
     }
 
-    fetchImg = async () => {
-        const {searchQuery, page} = this.state 
-        const API_KEY = '38387021-e8462f34030ce37ed84fa82f8';
-        axios.defaults.baseURL = 'https://pixabay.com/api/';
-        this.setState( {status: "prending"} )
-
-        try {
-            const res = await axios.get(`?q=${searchQuery}&page=${page}&key=${API_KEY}&image_type=photo&orientation=horizontal&per_page=12`);
-            const photos = res.data.hits;
-            
-           if (photos.length === 0) {
-            alert('There are no images for this request')
-           } 
-
-           const requests = photos.map(({id, tags, webformatURL, largeImageURL }) => ({id, tags, webformatURL, largeImageURL }));
-           this.setState((prevState) => ({
-            images: [...prevState.images, ...requests],
-            page: prevState.page + 1
-           }));
-
-      } catch (error) {
-            console.log(error);
-      }
-    }
-
-
     render () {
         return (
             <SearchbarField>
