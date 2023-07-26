@@ -1,6 +1,6 @@
 import { ToastContainer, toast, Zoom } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { Component } from "react";
+import React, { Component } from "react";
 import { AppStyled } from "./App.styled";
 import { FetchMaterials } from "services/api";
 import { Searchbar } from "components/Searchbar/Searchbar";
@@ -9,11 +9,9 @@ import Modal from "components/Modal/Modal";
 import { Button } from "components/Button/Button";
 import Spiner from "components/Loader/Loader";
 
-
- class App extends Component {
-
+class App extends Component {
   state = {
-    searchQuery: '',
+    searchQuery: "",
     images: [],
     page: 1,
     selectedImage: null,
@@ -21,90 +19,83 @@ import Spiner from "components/Loader/Loader";
     isLoading: false,
     isLastPage: false,
     status: "idle",
-    };
-    totalHits = null;
+    totalHits: null,
+  };
 
-    async componentDidUpdate(_, prevState) {
-      const { page, searchQuery } = this.state;
-      if (prevState.searchQuery !== searchQuery || prevState.page !== page) {
-        this.setState({ status: 'pending' });
-  
-        try {
-          const imageData = await FetchMaterials(searchQuery, page);
-          this.totalHits = imageData.total;
-          const imagesHits = imageData.hits;
-          if (!imagesHits.length) {
-            toast.warning(
-              'No results were found for your search, please try something else.',
-              { transition: Zoom, position: 'top-center' }
-            );
-          }
-          this.setState(({ images }) => ({
-            images: [...images, ...imagesHits],
-            status: 'resolved',
-          }));
-  
-          if (page > 1) {
-            const CARD_HEIGHT = 300; 
-            window.scrollBy({
-              top: CARD_HEIGHT * 2,
-              behavior: 'smooth',
-            });
-          }
-        } catch (error) {
-          toast.error(`Sorry something went wrong. ${error.message}`);
-          this.setState({ status: 'rejected' });
+  async componentDidUpdate(prevProps, prevState) {
+    const { page, searchQuery } = this.state;
+    if (prevState.searchQuery !== searchQuery || prevState.page !== page) {
+      this.setState({ status: "pending" });
+
+      try {
+        const imageData = await FetchMaterials(searchQuery, page);
+        const imagesHits = imageData.hits;
+        this.setState(({ images }) => ({
+          images: [...images, ...imagesHits],
+          status: "resolved",
+          totalHits: imageData.total,
+        }));
+
+        if (page > 1) {
+          const CARD_HEIGHT = 300;
+          window.scrollBy({
+            top: CARD_HEIGHT * 2,
+            behavior: "smooth",
+          });
         }
+      } catch (error) {
+        toast.error(`Sorry something went wrong. ${error.message}`);
+        this.setState({ status: "rejected" });
       }
     }
- 
-    handleFormSubmit = searchQuery => {
-      if (this.state.searchQuery === searchQuery) {
-        return;
-      }
-      this.resetState();
-      this.setState({ searchQuery });
-    };
+  }
 
-    handleSelectedImage = (largeImageUrl, tags) => {
-      this.setState({
-        selectedImage: largeImageUrl,
-        alt: tags,
-      });
-    };
-  
-    resetState = () => {
-      this.setState({
-        searchQuery: '',
-        page: 1,
-        images: [],
-        selectedImage: null,
-        alt: null,
-        status: 'idle',
-      });
-    };
-  
-    loadMore = () => {
-      this.setState(prevState => ({
-        page: prevState.page + 1,
-      }));
-    };
+  handleFormSubmit = (searchQuery) => {
+    if (this.state.searchQuery === searchQuery) {
+      return;
+    }
+    this.resetState();
+    this.setState({ searchQuery });
+  };
 
-    closeModal = () => {
-      this.setState({
-        selectedImage: null,
-      });
-    };
+  handleSelectedImage = (largeImageUrl, tags) => {
+    this.setState({
+      selectedImage: largeImageUrl,
+      alt: tags,
+    });
+  };
 
+  resetState = () => {
+    this.setState({
+      searchQuery: "",
+      page: 1,
+      images: [],
+      selectedImage: null,
+      alt: null,
+      status: "idle",
+    });
+  };
 
-  render () {
+  loadMore = () => {
+    this.setState((prevState) => ({
+      page: prevState.page + 1,
+    }));
+  };
 
-    const { images, status, selectedImage, alt } = this.state;
+  closeModal = () => {
+    this.setState({
+      selectedImage: null,
+    });
+  };
+
+  render() {
+    const { images, status, selectedImage, alt, totalHits, page } = this.state;
+    const showLoadMoreButton = images.length > 0 && images.length !== totalHits;
     return (
       <AppStyled>
         <Searchbar onSubmit={this.handleFormSubmit} />
         <ToastContainer autoClose={3000} theme="colored" pauseOnHover />
-        {status === 'pending' && <Spiner />}
+        {status === "pending" && <Spiner />}
         <ImageGallery images={images} onImageClick={this.handleSelectedImage} />
         {selectedImage && (
           <Modal
@@ -113,17 +104,10 @@ import Spiner from "components/Loader/Loader";
             onClose={this.closeModal}
           />
         )}
-        {images.length > 0 && images.length !== this.totalHits && (
-          <Button onClick={this.loadMore}  />   
-        )}
+        {showLoadMoreButton && <Button onClick={this.loadMore} />}
       </AppStyled>
     );
-
-  };
   }
-
-
-
+}
 
 export default App;
-
