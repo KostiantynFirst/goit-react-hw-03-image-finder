@@ -1,4 +1,4 @@
-import { ToastContainer, toast } from "react-toastify";
+import { ToastContainer, toast, Zoom } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Component } from "react";
 import { AppStyled } from "./App.styled";
@@ -21,22 +21,72 @@ import { Button } from "components/Button/Button";
     };
     totalHits = null;
 
- 
-    handleSubmit = async (searchQuery) => {
-    
-      try {
-        const { page } = this.state;
-        const res = await FetchMaterials(searchQuery, page );
-        this.setState(prevState => ({
-          images: [...prevState.images, ...res],
-          page: prevState.page + 1,
-      })); 
-     } catch (error) {
-      console.log(error);
-      toast.error("Error occurred while fetching images.");
+    async componentDidUpdate(_, prevState) {
+      const { page, searchQuery } = this.state;
+      if (prevState.searchQuery !== searchQuery || prevState.page !== page) {
+        this.setState({ status: 'pending' });
+  
+        try {
+          const imageData = await FetchMaterials(searchQuery, page);
+          this.totalHits = imageData.total;
+          const imagesHits = imageData.hits;
+          if (!imagesHits.length) {
+            toast.warning(
+              'No results were found for your search, please try something else.',
+              { transition: Zoom, position: 'top-center' }
+            );
+          }
+          this.setState(({ images }) => ({
+            images: [...images, ...imagesHits],
+            status: 'resolved',
+          }));
+  
+          if (page > 1) {
+            const CARD_HEIGHT = 300; 
+            window.scrollBy({
+              top: CARD_HEIGHT * 2,
+              behavior: 'smooth',
+            });
+          }
+        } catch (error) {
+          toast.error(`Sorry something went wrong. ${error.message}`);
+          this.setState({ status: 'rejected' });
+        }
+      }
     }
-  };
 
+ 
+    handleFormSubmit = searchQuery => {
+      if (this.state.searchQuery === searchQuery) {
+        return;
+      }
+      this.resetState();
+      this.setState({ searchQuery });
+    };
+
+    // handleSelectedImage = (largeImageUrl, tags) => {
+    //   this.setState({
+    //     selectedImage: largeImageUrl,
+    //     alt: tags,
+    //   });
+    // };
+  
+    resetState = () => {
+      this.setState({
+        searchQuery: '',
+        page: 1,
+        images: [],
+        selectedImage: null,
+        alt: null,
+        status: 'idle',
+      });
+    };
+  
+    loadMore = () => {
+      this.setState(prevState => ({
+        page: prevState.page + 1,
+      }));
+    };
 
   onImageClick = () => {
     console.log('click on image');
@@ -45,11 +95,11 @@ import { Button } from "components/Button/Button";
   render () {
     return (
       <AppStyled>
-        <Searchbar onSubmit={this.handleSubmit} />
+        <Searchbar onSubmit={this.handleFormSubmit} />
         <ToastContainer autoClose={3000} theme="colored" pauseOnHover />
         <ImageGallery images={this.state.images} onImageClick={this.onImageClick} />
         {/* <Modal /> */}
-        <Button onClick={() => this.handleSubmit()} />   
+        <Button onClick={this.loadMore}  />   
       </AppStyled>
     );
 
