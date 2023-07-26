@@ -49,7 +49,7 @@ import { Button } from "components/Button/Button";
         <ToastContainer autoClose={3000} theme="colored" pauseOnHover />
         <ImageGallery images={this.state.images} onImageClick={this.onImageClick} />
         {/* <Modal /> */}
-        <Button onClick={this.handleSubmit} />   
+        <Button onClick={() => this.handleSubmit()} />   
       </AppStyled>
     );
 
