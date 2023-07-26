@@ -17,20 +17,19 @@ import { Button } from "components/Button/Button";
     page: 1,
     isLoading: false,
     isLastPage: false,
+    status: "idle",
     };
     totalHits = null;
 
-    
-  
-  
+ 
     handleSubmit = async (searchQuery) => {
     
       try {
         const { page } = this.state;
         const res = await FetchMaterials(searchQuery, page );
         this.setState(prevState => ({
-        images: [...prevState.images, ...res],
-        page: prevState.page + 1,
+          images: [...prevState.images, ...res],
+          page: prevState.page + 1,
       })); 
      } catch (error) {
       console.log(error);
@@ -47,6 +46,7 @@ import { Button } from "components/Button/Button";
     return (
       <AppStyled>
         <Searchbar onSubmit={this.handleSubmit} />
+        <ToastContainer autoClose={3000} theme="colored" pauseOnHover />
         <ImageGallery images={this.state.images} onImageClick={this.onImageClick} />
         {/* <Modal /> */}
         <Button onClick={this.handleSubmit} />   
