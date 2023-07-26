@@ -1,4 +1,6 @@
-import { Component } from "react"
+import { Component } from "react";
+import { toast } from "react-toastify";
+
 import { SearchbarField, Header, Form, Button, Input, ButtonLabel} from "./Searchbar.styled"
 // import { FetchMaterials } from "services/api"
 // import { toast } from "react-toastify/dist/components";
@@ -11,17 +13,18 @@ export class Searchbar extends Component {
 
 
     handleChange = e => {
-        this.setState({ searchQuery: e.target.value });
+        this.setState({ searchQuery: e.target.value.toLowercase() });
     }
 
     handleSubmit = e => {
         e.preventDefault();
         const { searchQuery } = this.state;
-        if(searchQuery.trim() !== "") {
-            this.props.onSubmit(searchQuery);
+        if(searchQuery.trim() == "") {
+            toast.error("Enter something");
+            return;
         }
-
-        this.props.onSubmit(this.state.searchQuery)
+        this.props.onSubmit(searchQuery);
+        this.setState({ searchQuery: '' })
     }
 
     render () {
@@ -29,18 +32,19 @@ export class Searchbar extends Component {
             <SearchbarField>
                 <Header>
                     <Form onSubmit={this.handleSubmit}>
-                        <Button type="submit">
-                        <ButtonLabel>Search</ButtonLabel>
-                        </Button>
     
                     <Input
                         type="text"
                         autoComplete="off"
                         autoFocus
                         placeholder="Search images and photos"
+                        name="searchQuery"
                         value={this.state.searchQuery}
                         onChange={this.handleChange}
                     />
+                    <Button type="submit">
+                        <ButtonLabel>Search</ButtonLabel>
+                    </Button>
                     </Form>
                 </Header>
             </SearchbarField>
