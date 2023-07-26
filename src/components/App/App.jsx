@@ -7,6 +7,7 @@ import { Searchbar } from "components/Searchbar/Searchbar";
 import { ImageGallery } from "components/ImageGallery/ImageGallery";
 // import { Modal } from "components/Modal/Modal";
 import { Button } from "components/Button/Button";
+import Spiner from "components/Loader/Loader";
 
 
  class App extends Component {
@@ -97,6 +98,7 @@ import { Button } from "components/Button/Button";
       <AppStyled>
         <Searchbar onSubmit={this.handleFormSubmit} />
         <ToastContainer autoClose={3000} theme="colored" pauseOnHover />
+        {this.state.status === 'pending' && <Spiner />}
         <ImageGallery images={this.state.images} onImageClick={this.onImageClick} />
         {/* <Modal /> */}
         <Button onClick={this.loadMore}  />   
