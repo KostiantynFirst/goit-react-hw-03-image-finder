@@ -5,7 +5,7 @@ import { AppStyled } from "./App.styled";
 import { FetchMaterials } from "services/api";
 import { Searchbar } from "components/Searchbar/Searchbar";
 import { ImageGallery } from "components/ImageGallery/ImageGallery";
-// import { Modal } from "components/Modal/Modal";
+import Modal from "components/Modal/Modal";
 import { Button } from "components/Button/Button";
 import Spiner from "components/Loader/Loader";
 
@@ -16,6 +16,8 @@ import Spiner from "components/Loader/Loader";
     searchQuery: '',
     images: [],
     page: 1,
+    selectedImage: null,
+    alt: null,
     isLoading: false,
     isLastPage: false,
     status: "idle",
@@ -65,12 +67,12 @@ import Spiner from "components/Loader/Loader";
       this.setState({ searchQuery });
     };
 
-    // handleSelectedImage = (largeImageUrl, tags) => {
-    //   this.setState({
-    //     selectedImage: largeImageUrl,
-    //     alt: tags,
-    //   });
-    // };
+    handleSelectedImage = (largeImageUrl, tags) => {
+      this.setState({
+        selectedImage: largeImageUrl,
+        alt: tags,
+      });
+    };
   
     resetState = () => {
       this.setState({
@@ -89,18 +91,27 @@ import Spiner from "components/Loader/Loader";
       }));
     };
 
-  onImageClick = () => {
-    console.log('click on image');
-  };
-  
+    closeModal = () => {
+      this.setState({
+        selectedImage: null,
+      });
+    };
+
+
   render () {
     return (
       <AppStyled>
         <Searchbar onSubmit={this.handleFormSubmit} />
         <ToastContainer autoClose={3000} theme="colored" pauseOnHover />
         {this.state.status === 'pending' && <Spiner />}
-        <ImageGallery images={this.state.images} onImageClick={this.onImageClick} />
-        {/* <Modal /> */}
+        <ImageGallery images={this.state.images} onImageClick={this.handleSelectedImage} />
+        {this.state.selectedImage && (
+          <Modal
+            selectedImage={this.state.selectedImage}
+            tags={this.state.alt}
+            onClose={this.closeModal}
+          />
+        )}
         <Button onClick={this.loadMore}  />   
       </AppStyled>
     );
