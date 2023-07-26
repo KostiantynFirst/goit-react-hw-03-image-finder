@@ -57,7 +57,6 @@ import Spiner from "components/Loader/Loader";
         }
       }
     }
-
  
     handleFormSubmit = searchQuery => {
       if (this.state.searchQuery === searchQuery) {
@@ -99,16 +98,18 @@ import Spiner from "components/Loader/Loader";
 
 
   render () {
+
+    const { images, status, selectedImage, alt } = this.state;
     return (
       <AppStyled>
         <Searchbar onSubmit={this.handleFormSubmit} />
         <ToastContainer autoClose={3000} theme="colored" pauseOnHover />
-        {this.state.status === 'pending' && <Spiner />}
-        <ImageGallery images={this.state.images} onImageClick={this.handleSelectedImage} />
-        {this.state.selectedImage && (
+        {status === 'pending' && <Spiner />}
+        <ImageGallery images={images} onImageClick={this.handleSelectedImage} />
+        {selectedImage && (
           <Modal
-            selectedImage={this.state.selectedImage}
-            tags={this.state.alt}
+            selectedImage={selectedImage}
+            tags={alt}
             onClose={this.closeModal}
           />
         )}

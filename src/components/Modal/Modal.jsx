@@ -3,6 +3,7 @@ import { Component } from 'react';
 import { createPortal } from 'react-dom';
 import PropTypes from 'prop-types';
 import { Overlay, ModalStyled } from './Modal.styled';
+import Spiner from 'components/Loader/Loader';
 
 const modalRoot = document.querySelector('#modal-root');
 
@@ -13,12 +14,21 @@ export default class Modal extends Component {
     onClose: PropTypes.func,
   };
 
+  state = {
+    isLoading: true,
+  };
+
   componentDidMount() {
-    window.addEventListener('keydown', this.handleKeyDown);
+    const { selectedImage } = this.props;
+    const image = new Image();
+    image.src = selectedImage;
+    image.onload = () => {
+      this.setState({ isLoading: false });
+    };
   }
 
   componentWillUnmount() {
-    window.removeEventListener('keydown', this.handleKeyDown);
+    this.setState({ isLoading: true }); 
   }
 
   handleKeyDown = e => {
@@ -34,12 +44,18 @@ export default class Modal extends Component {
   };
   render() {
     const { selectedImage, tags } = this.props;
+    const { isLoading } = this.state;
+
 
     return createPortal(
       <Overlay onClick={this.handleBackdropClick}>
-        <ModalStyled>
-          <img src={selectedImage} alt={tags} />
-        </ModalStyled>
+        {isLoading ? (
+          <Spiner /> // Show the spinner while the image is loading
+        ) : (
+          <ModalStyled>
+            <img src={selectedImage} alt={tags} />
+          </ModalStyled>
+        )}
       </Overlay>,
       modalRoot
     );
