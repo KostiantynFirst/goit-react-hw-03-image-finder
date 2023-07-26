@@ -113,7 +113,9 @@ import Spiner from "components/Loader/Loader";
             onClose={this.closeModal}
           />
         )}
-        <Button onClick={this.loadMore}  />   
+        {images.length > 0 && images.length !== this.totalHits && (
+          <Button onClick={this.loadMore}  />   
+        )}
       </AppStyled>
     );
 
