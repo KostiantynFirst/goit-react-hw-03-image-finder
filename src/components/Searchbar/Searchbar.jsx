@@ -13,7 +13,7 @@ export class Searchbar extends Component {
 
 
     handleChange = e => {
-        this.setState({ searchQuery: e.target.value.toLowercase() });
+        this.setState({ searchQuery: e.target.value.toLowerCase() });
     }
 
     handleSubmit = e => {

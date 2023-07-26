@@ -2,6 +2,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Component } from "react";
 import { AppStyled } from "./App.styled";
+import { FetchMaterials } from "services/api";
 import { Searchbar } from "components/Searchbar/Searchbar";
 import { ImageGallery } from "components/ImageGallery/ImageGallery";
 // import { Modal } from "components/Modal/Modal";
@@ -11,18 +12,23 @@ import { Button } from "components/Button/Button";
  class App extends Component {
 
   state = {
+    searchQuery: '',
     images: [],
     page: 1,
     isLoading: false,
     isLastPage: false,
-    }
+    };
+    totalHits = null;
 
-  handleSubmit = async (searchQuery) => {
-    try {
-      
-      const { page } = this.state;
-      const res = await this.fetchMaterials(searchQuery, page, API_KEY);
-      this.setState(prevState => ({
+    
+  
+  
+    handleSubmit = async (searchQuery) => {
+    
+      try {
+        const { page } = this.state;
+        const res = await FetchMaterials(searchQuery, page );
+        this.setState(prevState => ({
         images: [...prevState.images, ...res],
         page: prevState.page + 1,
       })); 
