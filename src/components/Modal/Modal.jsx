@@ -7,7 +7,7 @@ import Spiner from 'components/Loader/Loader';
 
 const modalRoot = document.querySelector('#modal-root');
 
-export default class Modal extends Component {
+export default class CustomModal extends Component {
   static  = {
     selectedImage: PropTypes.string,
     tags: PropTypes.string,

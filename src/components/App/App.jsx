@@ -1,13 +1,13 @@
-import { ToastContainer, toast, Zoom } from "react-toastify";
+import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import React, { Component } from "react";
 import { AppStyled } from "./App.styled";
 import { FetchMaterials } from "services/api";
 import { Searchbar } from "components/Searchbar/Searchbar";
 import { ImageGallery } from "components/ImageGallery/ImageGallery";
-import Modal from "components/Modal/Modal";
+import CustomModal from "components/Modal/Modal";
 import { Button } from "components/Button/Button";
-import Spiner from "components/Loader/Loader";
+import Loader from "components/Loader/Loader";
 
 class App extends Component {
   state = {
@@ -89,16 +89,16 @@ class App extends Component {
   };
 
   render() {
-    const { images, status, selectedImage, alt, totalHits, page } = this.state;
+    const { images, status, selectedImage, alt, totalHits } = this.state;
     const showLoadMoreButton = images.length > 0 && images.length !== totalHits;
     return (
       <AppStyled>
         <Searchbar onSubmit={this.handleFormSubmit} />
         <ToastContainer autoClose={3000} theme="colored" pauseOnHover />
-        {status === "pending" && <Spiner />}
+        {status === "pending" && <Loader />}
         <ImageGallery images={images} onImageClick={this.handleSelectedImage} />
         {selectedImage && (
-          <Modal
+          <CustomModal
             selectedImage={selectedImage}
             tags={alt}
             onClose={this.closeModal}
