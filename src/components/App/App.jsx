@@ -73,8 +73,12 @@ class App extends Component {
     if (this.state.searchQuery === searchQuery) {
       return;
     }
-    this.resetState();
-    this.setState({ searchQuery });
+    // this.resetState();
+    this.setState({ searchQuery, page: 1,
+      images: [],
+      selectedImage: null,
+      alt: null,
+      status: "idle", });
   };
 
   handleSelectedImage = (largeImageUrl, tags) => {
@@ -84,16 +88,16 @@ class App extends Component {
     });
   };
 
-  resetState = () => {
-    this.setState({
-      searchQuery: "",
-      page: 1,
-      images: [],
-      selectedImage: null,
-      alt: null,
-      status: "idle",
-    });
-  };
+  // resetState = () => {
+  //   this.setState({
+  //     searchQuery: "",
+  //     page: 1,
+  //     images: [],
+  //     selectedImage: null,
+  //     alt: null,
+  //     status: "idle",
+  //   });
+  // };
 
   loadMore = () => {
     this.setState((prevState) => ({
