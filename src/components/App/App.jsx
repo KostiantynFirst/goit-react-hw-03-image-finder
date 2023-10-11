@@ -20,33 +20,54 @@ class App extends Component {
     totalHits: null,
   };
 
-  async componentDidUpdate(_, prevState) {
+   componentDidUpdate(_, prevState) {
     const { page, searchQuery } = this.state;
+    
     if (prevState.searchQuery !== searchQuery || prevState.page !== page) {
       this.setState({ status: "pending" });
 
-      try {
-        const imageData = await FetchMaterials(searchQuery, page);
-        const imagesHits = imageData.hits;
-        this.setState(({ images }) => ({
-          images: [...images, ...imagesHits],
-          status: "resolved",
-          totalHits: imageData.total,
-        }));
+      const fetchData = async () => {
+        
+        try {
+          const imageData = await FetchMaterials(searchQuery, page);
+          const imagesHits = imageData.hits;
+          const total = imageData.totalHits;
 
-        if (page > 1) {
-          const CARD_HEIGHT = 300;
-          window.scrollBy({
-            top: CARD_HEIGHT * 2,
-            behavior: "smooth",
-          });
+          this.setState(({ images }) => ({
+            images: [...images, ...imagesHits],
+            status: "resolved",
+            totalHits: imageData.total,
+          }));
+
+          if(page === 1 && total !== 0) {
+            toast.success(`We found ${total} images`);
+          }
+    
+          if(total === 0) {
+            toast.error('Something has gone wrong. Try again!');
+        
+           }
+        } catch (error) {
+          toast.error(`Sorry something went wrong. ${error.message}`);
+          
         }
-      } catch (error) {
-        toast.error(`Sorry something went wrong. ${error.message}`);
-        this.setState({ status: "rejected" });
       }
+
+      fetchData();
+
     }
   }
+
+        // const scrollWindow = () => {
+      //   const CARD_HEIGHT = 300;
+      //   window.scrollBy({
+      //     top: CARD_HEIGHT * 2,
+      //     behavior: "smooth",
+      //   });
+      // };
+      // if (page > 1) {
+      //   scrollWindow();
+      // }
 
   handleFormSubmit = (searchQuery) => {
     if (this.state.searchQuery === searchQuery) {
