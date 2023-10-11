@@ -25,10 +25,12 @@ export default class CustomModal extends Component {
     image.onload = () => {
       this.setState({ isLoading: false });
     };
+    window.addEventListener('keydown', this.handleKeyDown);
   }
 
   componentWillUnmount() {
     this.setState({ isLoading: true }); 
+    window.removeEventListener('keydown', this.handleKeyDown);
   }
 
   handleKeyDown = e => {
@@ -42,6 +44,7 @@ export default class CustomModal extends Component {
       this.props.onClose();
     }
   };
+  
   render() {
     const { selectedImage, tags } = this.props;
     const { isLoading } = this.state;
