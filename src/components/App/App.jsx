@@ -16,13 +16,11 @@ class App extends Component {
     page: 1,
     selectedImage: null,
     alt: null,
-    isLoading: false,
-    isLastPage: false,
     status: "idle",
     totalHits: null,
   };
 
-  async componentDidUpdate(prevProps, prevState) {
+  async componentDidUpdate(_, prevState) {
     const { page, searchQuery } = this.state;
     if (prevState.searchQuery !== searchQuery || prevState.page !== page) {
       this.setState({ status: "pending" });
